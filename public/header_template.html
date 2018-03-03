@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{{title}}</title>
+    <link rel="stylesheet" type="text/css" href="/slick/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="/slick/slick-theme.css"/>
+
+    <link rel="stylesheet" type="text/css" href="/style.css"/>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
+</head>
+<body>
+<header><div class="sub">
+    <div class="Logo_and_title">
+        <div class="logo">
+            <img src="/img/logo.svg">
+        </div>
+        <div class="titles">
+            <h1>Skadi FIS leaderbord</h1>
+            <h2>Global list of best skiers in Skadi FIS ski resorts</h2>
+        </div>
+    </div>
+    <!--<div class="resort">-->
+    <!--<div class="left">-->
+    <!--Schladming: Galsterberg, Hauser Kaibling, Dachstain, Gletscher, Reiteralm, Fageralm, Hoc...-->
+    <!--</div>-->
+    <!--<div class="right">-->
+    <!--<img src="/img/mount.svg" alt="">-->
+    <!--</div>-->
+    <!--</div>-->
+    <div class="topmenu">
+
+    </div>
+
+    <div class="awards">
+        <div id="awards_slider">
+            {{{AwardsListView}}}
+        </div>
+
+    </div></div>
+</header>
+<main>
+    <div class="selected_list" >
+        {{{PlayersListView}}}
+    </div>
+    <div class="selected_list_fullscreen" style="display: none">
+        <div class="column">
+            <div class="pic"><img src="/img/f_distance.svg" alt=""/> </div>
+            <div class="tit">total distance</div>
+            <div class="list">
+                    <div class="item">
+                        <div class="num">1</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Ivan  Mikhaylov</div>
+                        <div class="dist">40085.9 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">2</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Valeriy Maznev</div>
+                        <div class="dist">14589.8 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">3</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Hje 6249</div>
+                        <div class="dist">11733.8 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">4</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Hje 6248</div>
+                        <div class="dist">8733.8 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">5</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Hje 6241</div>
+                        <div class="dist">3333.8 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">6</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Hje 6245</div>
+                        <div class="dist">2533.8 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">7</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Hje 6246</div>
+                        <div class="dist">2533.8 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">8</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Hje 6247</div>
+                        <div class="dist">133.8 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">9</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Geronimo Glassberger</div>
+                        <div class="dist">0.0 km</div>
+                    </div>
+                    <div class="more">
+                        <div class="circle"></div>
+                        <div class="circle"></div>
+                        <div class="circle"></div>
+                    </div>
+            </div>
+        </div>
+        <div class="column">
+            <div class="pic"><img src="/img/f_distance.svg" alt=""/> </div>
+            <div class="tit">total distance</div>
+            <div class="list">
+                    <div class="item">
+                        <div class="num">1</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Ivan  Mikhaylov</div>
+                        <div class="dist">40085.9 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">2</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Valeriy Maznev</div>
+                        <div class="dist">14589.8 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">3</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Hje 6249</div>
+                        <div class="dist">11733.8 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">4</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Hje 6248</div>
+                        <div class="dist">8733.8 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">5</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Hje 6241</div>
+                        <div class="dist">3333.8 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">6</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Hje 6245</div>
+                        <div class="dist">2533.8 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">7</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Hje 6246</div>
+                        <div class="dist">2533.8 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">8</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Hje 6247</div>
+                        <div class="dist">133.8 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">9</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Geronimo Glassberger</div>
+                        <div class="dist">0.0 km</div>
+                    </div>
+                    <div class="more">
+                        <div class="circle"></div>
+                        <div class="circle"></div>
+                        <div class="circle"></div>
+                    </div>
+            </div>
+        </div>
+        <div class="column">
+            <div class="pic"><img src="/img/f_distance.svg" alt=""/> </div>
+            <div class="tit">total distance</div>
+            <div class="list">
+                    <div class="item">
+                        <div class="num">1</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Ivan  Mikhaylov</div>
+                        <div class="dist">40085.9 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">2</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Valeriy Maznev</div>
+                        <div class="dist">14589.8 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">3</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Hje 6249</div>
+                        <div class="dist">11733.8 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">4</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Hje 6248</div>
+                        <div class="dist">8733.8 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">5</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Hje 6241</div>
+                        <div class="dist">3333.8 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">6</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Hje 6245</div>
+                        <div class="dist">2533.8 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">7</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Hje 6246</div>
+                        <div class="dist">2533.8 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">8</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Hje 6247</div>
+                        <div class="dist">133.8 km</div>
+                    </div>
+                    <div class="item">
+                        <div class="num">9</div>
+                        <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+                        <div class="name">Geronimo Glassberger</div>
+                        <div class="dist">0.0 km</div>
+                    </div>
+                    <div class="more">
+                        <div class="circle"></div>
+                        <div class="circle"></div>
+                        <div class="circle"></div>
+                    </div>
+            </div>
+        </div>
+    </div>
+</main>
+<footer>
+    Be part of the global skiing leaderboard, download Skadi FIS now
+    <div class="links">
+        <div class="tit">Skadi FIS app</div>
+        <div class="appstore"><img src="/img/appstore.png" alt="appstore"/> </div>
+        <div class="playmarket"><img src="/img/playmarket.png" alt="playmarket"/> </div>
+        <div class="link">www.skadi.guide</div>
+    </div>
+</footer>
+<div class="popup_container" style="display: none" >
+    <div class="popup_overlay"></div>
+    <div class="popup">
+        <div class="tit">Fullscreen mode</div>
+        <div class="description">
+            Please shoose caregories to display fullscreen. Pick any 4 leaderboard disciplines.
+        </div>
+        <div class="categories">
+            <div class="item" onclick="popupMenuCheck(this)"><a href="#" >
+                <img src="/img/p_distance.svg" alt="distance">
+                <div class="name">distance</div>
+            </a></div>
+            <div class="item" onclick="popupMenuCheck(this)"><a href="#" >
+                <img src="/img/p_maxspeed.svg" alt="Max speed">
+                <div class="name">Max speed</div>
+                </a></div>
+            <div class="item" onclick="popupMenuCheck(this)"><a href="#" >
+                <img src="/img/p_score.svg" alt="Total score">
+                <div class="name">Total score</div>
+                </a></div>
+            <div class="item" onclick="popupMenuCheck(this)"><a href="#" >
+                <img src="/img/p_skirepublic.svg" alt="Max speed">
+                <div class="name">Max speed</div>
+            </a></div>
+            <div class="item" onclick="popupMenuCheck(this)"><a href="#" >
+                <img src="/img/p_distance.svg" alt="distance">
+                <div class="name">distance</div>
+            </a></div>
+            <div class="item" onclick="popupMenuCheck(this)"><a href="#" >
+                <img src="/img/p_maxspeed.svg" alt="Max speed">
+                <div class="name">Max speed</div>
+            </a></div>
+            <div class="item" onclick="popupMenuCheck(this)"><a href="#" >
+                <img src="/img/p_score.svg" alt="Total score">
+                <div class="name">Total score</div>
+            </a></div>
+            <div class="item" onclick="popupMenuCheck(this)"><a href="#" >
+                <img src="/img/p_skirepublic.svg" alt="Max speed">
+                <div class="name">Max speed</div>
+            </a></div>
+        </div>
+        <div class="menu">
+            <a href="#" class="ok" onclick="fullscreen_ok_onClick()">
+                OK
+            </a>
+            <div class="right">
+                <a href="#">Cancel</a>
+                <a href="#">Reset</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div id="p_prldr">
+    <div class="contpre">
+        <span class="svg_anm"></span>
+        <br>Подождите<br>
+        <small>идет загрузка</small>
+    </div>
+
+</div>
+
+</body>
+</html>
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+<script>
+    let period, competitionId;
+    let link1, link2, link3;
+    try {
+        parseURL();
+        activate_menu_link();
+        activate_award_links();
+    }catch (e){
+        console.log(e);
+    }
+
+
+    $( document ).ready(function() {
+        $('.topmenu').html(`
+            <nav>
+                <div class="item ${ link1 } first"><a href="${'/list/0/'+ competitionId}">Today</a></div>
+                <div class="item ${ link2 }"><a href="${  '/list/1/'+ competitionId}">The week</a></div>
+                <div class="item ${ link3 } last"><a href="${  '/list/3/'+ competitionId}">Season</a></div>
+            </nav>
+        `)
+        $(document).keyup(function(e) {
+            if (e.altKey && e.keyCode==13) {
+                fullscreen_mode_toggle()
+            }
+        });
+    });
+    
+    function fullscreen_mode_toggle() {
+
+        $('.popup_container').toggle();
+
+
+        return ;
+    }
+    function fullscreen_ok_onClick() {
+        $('.selected_list').hide();
+        $('.popup_container').hide();
+        $('.all_players').hide();
+        $('.selected_list_fullscreen').show();
+    }
+    function popupMenuCheck(el) {
+        $(el).addClass('item_cheked');
+        activate_pic( $(el) );
+    }
+
+    function getDateOfDay(type) {
+        const day = 86400000;
+        let now = new Date();
+        if (type === 0) return now.getDate();
+        if (type === 1) {
+            if (now.getDay()===0)
+                return now;
+            else
+                return now - (now.getDay()*day) ;
+        }
+        if (type === 3) {
+            if (now.getMonth()<6) return 1;
+            if (now.getMonth()>=6) return 0;
+        }
+    }
+    function getStrDate(type) {
+        let now = new Date();
+        if (type === 0) return now.getFullYear() +'-0'+ now.getMonth() +'-'+ getDateOfDay(type);
+        if (type === 1) {
+            let v = getDateOfDay(type)
+            v = v.getDay();
+            if (v < 1)
+                return now.getFullYear() +'-0'+ now.getMonth()-1 +'-'+ Math.abs(v);
+            else
+                return now.getFullYear() +'-0'+ now.getMonth() +'-'+ Math.abs(v);
+        }
+        if (type === 3){
+            if ( getDateOfDay(type) === 0 )
+                return now.getFullYear() +'-06-01';
+            if ( getDateOfDay(type) === 1 )
+                return now.getFullYear()+1 +'-06-01';
+        }
+
+    }
+
+    function activate_menu_link() {
+        if (period==='0')  link1 = 'active';
+        if (period==='1')  link2 = 'active';
+        if (period==='3')  link3 = 'active';
+    }
+    function activate_award_links() {
+        let arr = $('.awards .item')
+        for ( let i=0; i<arr.length; i++){
+            if ( competitionId == arr[i].id)
+                $('.awards #'+arr[i].id).addClass('active')
+        }
+
+        let arr2 = $('.awards .item a')
+        for ( let i=0; i<arr2.length; i++){
+            arr2[i].href = '/list/'+period+'/'+arr2[i].id;
+        }
+
+        $('.awards .item').not('.active').hover(function(){activate_pic(this)}, function(){diactivate_pic(this)});
+        $('.popup .item ').not('.active').hover(function(){activate_pic(this)}, function(){diactivate_pic(this)});
+        toggle_activated_pic( $('.awards .active') )
+    }
+
+    function toggle_activated_pic(el) {
+        let current_url = $(el).children('a').children('img').attr('src');
+        let current_len = current_url.length;
+        current_url = current_url.substr(0, current_len-4);
+        current_len = current_url.length;
+        let active_part = current_url.substr(-7);
+        let active_text = '_active';
+        let url;
+
+        if (active_part === active_text)
+            url = current_url.substr(0, current_len-7);
+        else
+            url = current_url + active_text;
+
+        url+='.svg';
+        $(el).children('a').children('img').attr('src', url);
+    }
+
+    function diactivate_pic(el) {
+        if($(el).attr('class')==='item item_cheked') return;
+        let current_url = $(el).children('a').children('img').attr('src');
+        let current_len = current_url.length;
+        current_url = current_url.substr(0, current_len-4);
+        current_len = current_url.length;
+        let url = current_url.substr(0, current_len-7);
+        url+='.svg';
+        $(el).children('a').children('img').attr('src', url);
+        $(el).children('a').removeClass('active')
+    }
+    function activate_pic(el) {
+        if($(el).attr('class')==='item item_cheked') return;
+        let current_url = $(el).children('a').children('img').attr('src');
+        let current_len = current_url.length;
+        current_url = current_url.substr(0, current_len-4);
+        let active_text = '_active';
+        let url = current_url + active_text;
+        url+='.svg';
+        $(el).children('a').children('img').attr('src', url);
+        $(el).children('a').addClass('active')
+    }
+
+
+    function parseURL() {
+        let a, i;
+        a = location.pathname;
+        i = a.indexOf("/", 1)
+
+        a = a.substr(i);
+        i = a.indexOf("/", 1)
+        period = a.substr(1,i-1);
+        a = a.substr(i);
+        i = a.indexOf("/", 1)
+        if (a.substr(1).indexOf("/") >-1)
+            competitionId = a.substr(1,i-1);
+        else
+            competitionId = a.substr(1)
+    }
+
+    function preloadImages()
+    {
+        for(var i = 0; i<arguments.length; i++)
+            $("<img />").attr("src", "/"+arguments[i]);
+    }
+    preloadImages("img/bg.jpg","img/distance.svg","img/distance_active.svg","img/maxspeed.svg","img/maxspeed_active.svg","img/time.svg","img/time_active.svg");
+    preloadImages("img/p_bg.jpg","img/p_distance.svg","img/p_distance_active.svg","img/p_maxspeed.svg","img/p_maxspeed_active.svg","img/p_time.svg","img/p_time_active.svg");
+</script>
+
+<script type="text/javascript">$(window).on('load', function () {
+    var $preloader = $('#p_prldr'),
+        $svg_anm   = $preloader.find('.svg_anm');
+    $svg_anm.fadeOut();
+    $preloader.delay(300).fadeOut('slow');
+});</script>
+
+<script type="text/javascript" src="/slick/slick.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#awards_slider').slick({
+        dots: false,
+        infinite: false,
+        speed: 300,
+        slidesToShow: 8,
+        slidesToScroll: 1,
+        responsive: [
+            {
+                breakpoint: 1020,
+                settings: {
+                    slidesToShow: 6,
+                    slidesToScroll: 1
+                }
+            },
+            {
+                breakpoint: 720,
+                settings: {
+                    slidesToShow: 4,
+                    slidesToScroll: 1,
+                }
+            },
+            {
+                breakpoint: 540,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 1,
+                }
+            },
+        ]
+    });
+});
+</script>

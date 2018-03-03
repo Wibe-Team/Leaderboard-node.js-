@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{{title}}</title>
+    <link rel="stylesheet" type="text/css" href="/slick/slick.css"/>
+    <link rel="stylesheet" type="text/css" href="/slick/slick-theme.css"/>
+
+    <link rel="stylesheet" type="text/css" href="/style.css"/>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
+</head>
+<body>
+<header><div class="sub">
+    <div class="Logo_and_title">
+        <div class="logo">
+            <img src="/img/logo.svg">
+        </div>
+        <div class="titles">
+            <h1>Skadi FIS leaderbord</h1>
+            <h2>Global list of best skiers in Skadi FIS ski resorts</h2>
+        </div>
+    </div>
+        <div class="resort">
+            <div class="left">
+                {{{data}}}
+            </div>
+            <div class="right">
+                <img src="/img/mount.svg" alt="">
+            </div>
+        </div>
+
+    <div class="topmenu">
+        {{{TopMenuView}}}
+    </div>
+
+    <div class="awards">
+        <div id="awards_slider">
+            {{{AwardsListView}}}
+        </div>
+
+    </div></div>
+</header>
+<main>
+    <div class="selected_list" >
+        {{{PlayersListView}}}
+</main>
+
+<footer>
+    Be part of the global skiing leaderboard, download Skadi FIS now
+    <div class="links">
+        <div class="tit">Skadi FIS app</div>
+        <div class="appstore"><img src="/img/appstore.png" alt="appstore"/> </div>
+        <div class="playmarket"><img src="/img/playmarket.png" alt="playmarket"/> </div>
+        <div class="link">www.skadi.guide</div>
+    </div>
+</footer>
+<div class="popup_container" style="display: none">
+    <div class="popup_overlay"></div>
+    <div class="popup">
+        <div class="tit">Fullscreen mode</div>
+        <div class="description">
+            Please shoose caregories to display fullscreen. Pick any {{{popup_categories_count}}} leaderboard disciplines.
+        </div>
+        <div class="categories">
+            {{{CategoriesListView}}}
+        </div>
+        <div class="menu">
+            <a class="ok" onclick="fullscreen_ok_onClick()">
+                OK
+            </a>
+            <div class="right">
+                <a href="">Cancel</a>
+                <a href="">Reset</a>
+            </div>
+        </div>
+    </div>
+
+</div>
+<div id="p_prldr">
+    <div class="contpre">
+        <span class="svg_anm"></span>
+        <br>Подождите<br>
+        <small>идет загрузка</small>
+    </div>
+
+</div>
+
+</body>
+</html>
+
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+
+<script>
+    const popup_categories_count = {{{popup_categories_count}}};
+    const period = {{{period}}};
+
+    const cookie_time = new Date(new Date().getTime() + 3600* 3600 * 1000);
+
+    let keys=[];
+    let categories_array=[];
+
+    document.cookie = "lasturl="+location.href+"; path=/; expires="+cookie_time;
+
+    $( document ).ready(function() {
+        activate_pic( $('.awards .active') );
+        $('.awards .item').not('.active').hover(function(){activate_pic(this)}, function(){deactivate_pic(this)});
+        // $('.popup .item ').not('.active').hover(function(){activate_pic(this)}, function(){deactivate_pic(this)});
+
+        $(document).keydown(function(e){
+            let code = e.which;
+            if (keys.indexOf(code)<0){keys.push(code);}
+            if (
+                (keys[0] === 17 && keys[1] === 13) ||
+                (keys[1] === 17 && keys[0] === 13) ||
+
+                (keys[0] === 18 && keys[1] === 13) ||
+                (keys[1] === 18 && keys[0] === 13) ||
+
+                (keys[0] === 93 && keys[1] === 13) ||
+                (keys[1] === 93 && keys[0] === 13) ||
+
+                (keys[0] === 91 && keys[1] === 13) ||
+                (keys[1] === 91 && keys[0] === 13)
+            ) {
+                $('.popup_container').show();0
+            }
+            if (e.keyCode===27) {
+                $('.popup_container').hide();
+            }
+            setTimeout(()=>keys=[], 300);
+        });
+    });
+
+    function popupMenuCheck(el) {
+        let id = $(el).attr('id');
+        let n = 0;
+        for (let i in categories_array)
+            if (categories_array[i] !=='') n++;
+
+        if ($(el).attr('class') !== 'item item_checked'){
+            if (categories_array.indexOf(id)<0)
+                if (n < popup_categories_count){
+                    categories_array.push(id);
+                    $(el).addClass('item_checked');
+                    activate_pic( $(el) );
+                }
+        }else{
+            categories_array[categories_array.indexOf(id)]=""
+            $(el).removeClass('item_checked');
+            deactivate_pic( $(el) );
+        }
+    }
+
+    function fullscreen_ok_onClick() {
+        let str=''
+        for( let i in categories_array){
+            if (categories_array[i] !== '')
+                str+=categories_array[i]+"_";
+        }
+        if (str!=='')
+            window.location = '/fs_list/'+period+'/'+str.substr(0, str.length-1)
+        else alert('не выбрано')
+    }
+
+    function deactivate_pic(el) {
+        // if($(el).attr('class')==='item item_checked') return;
+        let current_url = $(el).children('a').children('img').attr('src');
+        let current_len = current_url.length;
+        let filetype = current_url.substr(current_len-4);
+        current_url = current_url.substr(0, current_len-4);
+        current_len = current_url.length;
+        if (current_url.substr( current_len-7, current_len) !== '_active')
+            return
+        let url = current_url.substr(0, current_len-7);
+        url+= filetype;
+        $(el).children('a').children('img').attr('src', url);
+        $(el).children('a').removeClass('active')
+    }
+    function activate_pic(el) {
+        // if($(el).attr('class')==='item item_checked') return;
+        let current_url = $(el).children('a').children('img').attr('src');
+        let current_len = current_url.length;
+        let filetype = current_url.substr(current_len-4);
+        current_url = current_url.substr(0, current_len-4);
+        let active_text = '_active';
+        let url = current_url + active_text;
+        url+= filetype;
+        $(el).children('a').children('img').attr('src', url);
+        $(el).children('a').addClass('active')
+    }
+
+    function getPageType() {
+        let l = location.pathname.substr(1);
+        return l.substr(0, l.indexOf('/'))
+    }
+
+    function toPreviousPage() {
+        window.location = getCookie('lasturl');
+    }
+    //    function toggle_activated_pic(el) {
+    //        let current_url = $(el).children('a').children('img').attr('src');
+    //        let current_len = current_url.length;
+    //        current_url = current_url.substr(0, current_len-4);
+    //        current_len = current_url.length;
+    //        let active_part = current_url.substr(-7);
+    //        let active_text = '_active';
+    //        let url;
+    //
+    //        if (active_part === active_text)
+    //            url = current_url.substr(0, current_len-7);
+    //        else
+    //            url = current_url + active_text;
+    //
+    //        url+='.svg';
+    //        $(el).children('a').children('img').attr('src', url);
+    //    }
+</script>
+
+<script type="text/javascript">
+    function getCookie(name) {
+        var matches = document.cookie.match(new RegExp(
+                "(?:^|; )" + name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') + "=([^;]*)"
+        ));
+        return matches ? decodeURIComponent(matches[1]) : undefined;
+    }
+    function preloadImages()
+    {
+        for(var i = 0; i<arguments.length; i++)
+            $("<img />").attr("src", "/"+arguments[i]);
+    }
+    preloadImages("img/bg.jpg","img/distance.svg","img/distance_active.svg","img/maxspeed.svg","img/maxspeed_active.svg","img/time.svg","img/time_active.svg");
+    preloadImages("img/p_distance.svg","img/p_distance_active.svg","img/p_maxspeed.svg","img/p_maxspeed_active.svg","img/p_time.svg","img/p_time_active.svg");
+</script>
+<script type="text/javascript">$(window).on('load', function () {
+    var $preloader = $('#p_prldr'),
+        $svg_anm   = $preloader.find('.svg_anm');
+    $svg_anm.fadeOut();
+    $preloader.delay(300).fadeOut('slow');
+});</script>
+
+<script type="text/javascript" src="/slick/slick.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+    $('#awards_slider').slick({
+        dots: false,
+        infinite: false,
+        speed: 300,
+        slidesToShow: 8,
+        slidesToScroll: 1,
+        responsive: [
+            {
+                breakpoint: 1020,
+                settings: {
+                    slidesToShow: 6,
+                    slidesToScroll: 1
+                }
+            },
+            {
+                breakpoint: 720,
+                settings: {
+                    slidesToShow: 4,
+                    slidesToScroll: 1,
+                }
+            },
+            {
+                breakpoint: 540,
+                settings: {
+                    slidesToShow: 3,
+                    slidesToScroll: 1,
+                }
+            },
+        ]
+    });
+});
+</script>
