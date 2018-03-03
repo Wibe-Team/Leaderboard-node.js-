@@ -112,7 +112,7 @@ function getPlayerColumnView(obj, column_info) {
     let str = `        
         <div class="column">
             <div class="pic"><img src="/img/f_${column_info.tabIcon}" alt="${column_info.tabname}"/> </div>
-            <div class="tit">${column_info.tabname}</div>
+            <div class="tit" style="color: ${column_info.color};">${column_info.tabname}</div>
             <div class="list">`;
 
     let n=0;
