@@ -24,8 +24,18 @@
         </div>
     </div>
         <div class="resort">
+            <div class="select" style="display: block;">
+                <div class="item">Gstaad</div>
+                <div class="item">Vialattea</div>
+                <div class="item">Schladming</div>
+                <div class="item">Park City</div>
+                <div class="item">Les 3 Vallees</div>
+                <div class="item">Meribel</div>
+                <div class="item">Les Portes du Soleil</div>
+            </div>
             <div class="left">
-                {{{data}}}
+                Vialattea: Cesana Claviere,Cesana Sansicario,Sestriere,Sauze d'Oulx,Montgenevre
+                <!--{{{data}}}-->
             </div>
             <div class="right">
                 <img src="/img/mount.svg" alt="">
@@ -97,6 +107,7 @@
 <script>
     const popup_categories_count = {{{popup_categories_count}}};
     const period = {{{period}}};
+    let resort = {{{resort}}};
 
     const cookie_time = new Date(new Date().getTime() + 3600* 3600 * 1000);
 
@@ -162,7 +173,7 @@
                 str+=categories_array[i]+"_";
         }
         if (str!=='')
-            window.location = '/fs_list/'+period+'/'+str.substr(0, str.length-1)
+            window.location = '/fs_list/'+period+'/'+str.substr(0, str.length-1)+'/'+resort+'/';
         else alert('не выбрано')
     }
 

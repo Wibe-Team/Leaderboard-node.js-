@@ -20,7 +20,7 @@ header{
     background-size: auto 230px;
     display: flex;
     justify-content: center;
-    z-index: 30;
+    z-index: 31;
 }
 header .sub{
     max-width: 880px;
@@ -58,9 +58,38 @@ header .resort{
     display: flex;
     justify-content: space-between;
 }
+header .resort .select{
+    position: absolute;
+    z-index: 40;
+    top: 50px;
+    width: 100%;
+    padding: 15px 10px;
+
+    max-height: 520px;
+    background: #fff;
+
+    -webkit-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.5);
+    -moz-box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.5);
+    box-shadow: 0px 0px 20px 0px rgba(0,0,0,0.5);
+
+    border-radius: 13px 13px 13px 13px;
+    -moz-border-radius: 13px 13px 13px 13px;
+    -webkit-border-radius: 13px 13px 13px 13px;
+    border: 0px solid #000000;
+}
+header .resort .select .item{
+    height: 40px;
+    line-height: 40px;
+    border-bottom: 1px solid #e0e0e0;
+
+    font-size: 16px;
+    font-weight: 300;
+}
 header .resort .left{
     padding-left: 30px;
     text-align: left;
+    line-height: 25px;
+
     width: 100%;
     white-space: nowrap;
     overflow: hidden;
@@ -527,6 +556,5 @@ footer .links .playmarket{
     position: absolute;
     width: 41px;
     height: 41px;
-    background: url(images/oval.svg) center center no-repeat;
     background-size:41px;
     margin: -16px 0 0 -16px;}
