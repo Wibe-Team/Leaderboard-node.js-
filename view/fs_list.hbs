@@ -24,10 +24,14 @@
         </div>
     </div>
     <div class="resort">
-        <div class="left">
-            {{{data}}}
+        <div class="select" style="display: none;">
+            <div class="item" id="0" onclick="resortCheck(this)" >All resorts</div>
+            {{{ResortList}}}
         </div>
-        <div class="right">
+        <div class="left">
+            {{{CurrentResort}}}
+        </div>
+        <div class="right" onclick="resortListToggle()">
         <img src="/img/mount.svg" alt="">
         </div>
     </div>
@@ -50,59 +54,6 @@
         <div class="link">www.skadi.guide</div>
     </div>
 </footer>
-<div class="popup_container" style="display: none" >
-    <div class="popup_overlay"></div>
-    <div class="popup">
-        <div class="tit">Fullscreen mode</div>
-        <div class="description">
-            Please shoose caregories to display fullscreen. Pick any 4 leaderboard disciplines.
-        </div>
-        <div class="categories">
-            <div class="item" onclick="popupMenuCheck(this)"><a href="#" >
-                <img src="/img/p_distance.svg" alt="distance">
-                <div class="name">distance</div>
-            </a></div>
-            <div class="item" onclick="popupMenuCheck(this)"><a href="#" >
-                <img src="/img/p_maxspeed.svg" alt="Max speed">
-                <div class="name">Max speed</div>
-                </a></div>
-            <div class="item" onclick="popupMenuCheck(this)"><a href="#" >
-                <img src="/img/p_score.svg" alt="Total score">
-                <div class="name">Total score</div>
-                </a></div>
-            <div class="item" onclick="popupMenuCheck(this)"><a href="#" >
-                <img src="/img/p_skirepublic.svg" alt="Max speed">
-                <div class="name">Max speed</div>
-            </a></div>
-            <div class="item" onclick="popupMenuCheck(this)"><a href="#" >
-                <img src="/img/p_distance.svg" alt="distance">
-                <div class="name">distance</div>
-            </a></div>
-            <div class="item" onclick="popupMenuCheck(this)"><a href="#" >
-                <img src="/img/p_maxspeed.svg" alt="Max speed">
-                <div class="name">Max speed</div>
-            </a></div>
-            <div class="item" onclick="popupMenuCheck(this)"><a href="#" >
-                <img src="/img/p_score.svg" alt="Total score">
-                <div class="name">Total score</div>
-            </a></div>
-            <div class="item" onclick="popupMenuCheck(this)"><a href="#" >
-                <img src="/img/p_skirepublic.svg" alt="Max speed">
-                <div class="name">Max speed</div>
-            </a></div>
-        </div>
-        <div class="menu">
-            <a href="#" class="ok" onclick="fullscreen_ok_onClick()">
-                OK
-            </a>
-            <div class="right">
-                <a href="#">Cancel</a>
-                <a href="#">Reset</a>
-            </div>
-        </div>
-    </div>
-
-</div>
 <div id="p_prldr">
     <div class="contpre">
         <span class="svg_anm"></span>
@@ -119,10 +70,28 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 
 <script>
-    const period = {{{period}}};
+    let period = '{{{period}}}';
+    let competitionId = '{{{competitionId}}}';
+    let resort = '{{{resort}}}';
+    const cats = `{{{tabs}}}`;
+    const refreshTimeout = {{{refreshTimeout}}};
+    let idList = '[{{{idList}}}]';
+    try { idList = JSON.parse(idList) } catch(e){console.log(e);}
+    let idListlink = idList.join('_');
 
     let keys=[]
+
     $( document ).ready(function() {
+        keydownHandlier();
+        autorefresh_start();
+    });
+
+    function autorefresh_start() {
+        let timer = setInterval(function() {
+            asyncStartGetplayerslistJSON();
+        }, refreshTimeout);
+    }
+    function keydownHandlier() {
         $(document).keydown(function(e){
             let code = e.which;
             if (keys.indexOf(code)<0){keys.push(code);}
@@ -143,9 +112,116 @@
             }
             setTimeout(()=>keys=[], 300);
         });
-    });
+    }
+
+    function validateDatetoStr(targetDate){
+        let str ='' + targetDate.getFullYear()+'-';
+        if ( (targetDate.getMonth()+1) >9 ) str+=(targetDate.getMonth()+1)+'-';
+        else str+='0'+(targetDate.getMonth()+1)+'-';
+        if (targetDate.getDate()>9 ) str+=targetDate.getDate();
+        else str+='0'+targetDate.getDate();
+        return str;
+    }
+    function getStrDate(type) {
+        let targetDate = new Date();
+        if (type === 0) {
+            // Obtaining today's date.
+            return validateDatetoStr(targetDate);
+        }
+        if (type === 1) {
+            // Obtaining last sunday date.
+            targetDate.setDate(targetDate.getDate() - (targetDate.getDay() + 7) % 7);
+            return validateDatetoStr(targetDate);
+        }
+        if (type === 3) {
+            // Obtaining 1.08 of the last year.
+            return (targetDate.getMonth()>=8) ? targetDate.getFullYear()+'-08-01' : targetDate.getFullYear()-1+'-08-01';
+        }
+    }
 
 
+    function buildplayerslisbyJSON(json) {
+        let tabs, obj,str = '';
+        obj = json
+        // try { obj = JSON.parse(json) } catch(e){console.log(json); console.log('___',e);}
+        try { tabs = JSON.parse(cats) } catch(e){console.log(e);}
+        for(let i in obj){
+            for (let j in tabs)
+                if (idList[i]==tabs[j].tabId)
+                    str+=getPlayerColumnView( obj[i] , tabs[j] )
+        }
+        $('.selected_list_fullscreen').html(str);
+        // console.log(str);
+    }
+
+    function getPlayerColumnView(obj, column_info) {
+        let str = `
+        <div class="column">
+            <div class="pic"><img src="/img/f_${column_info.tabIcon}" alt="${column_info.tabname}"/> </div>
+            <div class="tit" style="color: ${column_info.color};">${column_info.tabname}</div>
+            <div class="list">`;
+        let n=0;
+        for(let i in obj){
+            n++;
+            str+=getPlayerRowView( obj[i] , column_info.units_in_line, n)
+        }
+        str +=
+                `<div class="more">
+                        <div class="circle"></div>
+                        <div class="circle"></div>
+                        <div class="circle"></div>
+                    </div>
+            </div>
+        </div>`;
+        return str;
+    }
+    function getPlayerRowView(obj, units, id) {
+        return `
+        <div class="item">
+            <div class="num">${id}</div>
+            <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+            <div class="name">${obj.fbUserName}</div>
+            <div class="dist">${ obj.criterion +' '+units }</div>
+        </div>`
+    }
+    function resortCheck(el) {
+        resort = $(el).attr('id');
+        window.history.pushState(null, null, "/fs_list/"+period+'/'+idListlink+'/'+resort+'/');
+        let str =''
+        if ($(el).children('.name').text()!=='')
+            str = $(el).children('.name').text() +':'+ $(el).children('.subAreas').text()
+        setCurrentResort( str  );
+        asyncStartGetplayerslistJSON();
+        resortListToggle();
+    }
+    function setCurrentResort(str){
+        $('.resort .left').html(str);
+    }
+    async function asyncStartGetplayerslistJSON () {
+        let url = location.pathname.substr(1);;
+        let k = url.indexOf('/');
+
+        return await fetch('/fs_json'+url.substr(k))
+                .then((res)=> {return res.json();})
+                .then((res)=> {buildplayerslisbyJSON(res);})
+                .catch( (e)=> {
+                    console.log('api error in fetch');
+                    console.log(e);
+                    return 'error'
+                } )
+    }
+
+    function getResortFromUrl(){
+        let str = location.pathname
+        let l = str.length;
+        if (str[l-1]==='/') str = str.substr(0, l-1);
+        return str.substr(0, str.lastIndexOf('/')+1 ) ;
+    }
+
+
+    function resortListToggle() {
+        $('.resort .select').toggle();
+    }
 
     function toPreviousPageType() {
         window.location = getCookie('lasturl');

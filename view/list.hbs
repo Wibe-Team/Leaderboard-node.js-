@@ -24,20 +24,14 @@
         </div>
     </div>
         <div class="resort">
-            <div class="select" style="display: block;">
-                <div class="item">Gstaad</div>
-                <div class="item">Vialattea</div>
-                <div class="item">Schladming</div>
-                <div class="item">Park City</div>
-                <div class="item">Les 3 Vallees</div>
-                <div class="item">Meribel</div>
-                <div class="item">Les Portes du Soleil</div>
+            <div class="select" style="display: none;">
+                <div class="item" id="0" onclick="resortCheck(this)" >All resorts</div>
+                {{{ResortList}}}
             </div>
             <div class="left">
-                Vialattea: Cesana Claviere,Cesana Sansicario,Sestriere,Sauze d'Oulx,Montgenevre
-                <!--{{{data}}}-->
+                {{{CurrentResort}}}
             </div>
-            <div class="right">
+            <div class="right" onclick="resortListToggle()">
                 <img src="/img/mount.svg" alt="">
             </div>
         </div>
@@ -89,6 +83,7 @@
     </div>
 
 </div>
+<!--{{tt}}-->
 <div id="p_prldr">
     <div class="contpre">
         <span class="svg_anm"></span>
@@ -105,11 +100,15 @@
 <script type="text/javascript" src="http://code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
 
 <script>
-    const popup_categories_count = {{{popup_categories_count}}};
-    const period = {{{period}}};
-    let resort = {{{resort}}};
-
     const cookie_time = new Date(new Date().getTime() + 3600* 3600 * 1000);
+    const popup_categories_count = {{{popup_categories_count}}};
+    let period = '{{{period}}}';
+    let resort = '{{{resort}}}';
+    let competitionId = '{{{competitionId}}}';
+    let unitsinline = '{{{unitsinline}}}';
+    let players_count = 0;
+
+
 
     let keys=[];
     let categories_array=[];
@@ -145,6 +144,78 @@
             setTimeout(()=>keys=[], 300);
         });
     });
+    function updatePageByJSON(obj) {
+        $('.selected_list').html( getPlayersListView( obj, unitsinline) );
+        $('.all_players').html( getPlayersCountView() );
+        // $('.topmenu').html( getTopMenuView( 'list') );
+        // getAwardsListView();
+
+        console.log( getPlayersListView( obj, unitsinline) );
+    }
+    function setCurrentResort(str){
+        $('.resort .left').html(str);
+    }
+    function getTopMenuView(type) {
+        let link1, link2, link3;
+        if (period==='0') link1 = 'active';
+        if (period==='1') link2 = 'active';
+        if (period==='3') link3 = 'active';
+        return `
+            <nav>
+                <div class="item ${ link1 } first"><a href="/${type+'/0/'+ competitionId+'/'+resort}/">Today</a></div>
+                <div class="item ${ link2 }"><a href="${ '/'+type+'/1/'+ competitionId+'/'+resort}/">The week</a></div>
+                <div class="item ${ link3 } last"><a href="${ '/'+type+'/3/'+ competitionId+'/'+resort}/">Season</a></div>
+            </nav>
+        `
+    }
+    function getPlayersListView(obj, units) {
+        let n=0,str = '';
+        for(let i in obj){
+            n++;
+            str+=getPlayerRowView( obj[i] , units, n)
+        }
+        players_count = n
+        return str;
+    }
+    function getPlayersCountView(){
+        return `
+            <div class="all_players">
+                All players: ${players_count}
+            </div>`;
+    }
+    function getPlayerRowView(obj, units, id) {
+        return `
+        <div class="item">
+            <div class="num">${id}</div>
+            <!--<div class="pic"><img src="img/pic.png" alt=""></div>-->
+            <div class="name">${obj.fbUserName}</div>
+            <div class="dist">${ obj.criterion +' '+units }</div>
+        </div>`
+    }
+    function getAwardsListView() {
+        deactivate_pic($('.awards .active'))
+        $('.awards .active').removeClass('active').hover(function(){activate_pic(this)}, function(){deactivate_pic(this)});
+        // $('.awards #'+competitionId).addClass('active');
+    }
+    function getCurrentResort(resort, arr) {
+        for ( let i in arr)
+            if (parseInt(resort) === arr[i].id)
+                return arr[i].name+': '+arr[i].subAreas;
+    }
+    async function asyncStartUpdatePage() {
+        let url = location.pathname.substr(1);;
+        let k = url.indexOf('/');
+
+        return await fetch('/json'+url.substr(k))
+                .then((res)=> {return res.json();})
+                .then((res)=> {updatePageByJSON(res);})
+                // .then((res)=> {console.log(res);})
+                .catch( (e)=> {
+                    console.log('api error in fetch');
+                    console.log(e);
+                    return 'error'
+                } )
+    }
 
     function popupMenuCheck(el) {
         let id = $(el).attr('id');
@@ -165,7 +236,29 @@
             deactivate_pic( $(el) );
         }
     }
+    function getResortFromUrl(){
+        let str = location.pathname
+        let l = str.length;
+        if (str[l-1]==='/') str = str.substr(0, l-1);
+        return str.substr(0, str.lastIndexOf('/')+1 ) ;
+    }
 
+    function resortCheck(el) {
+        // window.location = getResortFromUrl() + $(el).attr('id');
+        resort = $(el).attr('id');
+        window.history.pushState(null, null, "/list/"+period+'/'+competitionId+'/'+resort+'/');
+        let str =''
+        if ($(el).children('.name').text()!=='')
+            str = $(el).children('.name').text() +':'+ $(el).children('.subAreas').text()
+        setCurrentResort( str  );
+
+        asyncStartUpdatePage();
+        resortListToggle();
+
+    }
+    function resortListToggle() {
+        $('.resort .select').toggle();
+    }
     function fullscreen_ok_onClick() {
         let str=''
         for( let i in categories_array){
@@ -212,23 +305,7 @@
     function toPreviousPage() {
         window.location = getCookie('lasturl');
     }
-    //    function toggle_activated_pic(el) {
-    //        let current_url = $(el).children('a').children('img').attr('src');
-    //        let current_len = current_url.length;
-    //        current_url = current_url.substr(0, current_len-4);
-    //        current_len = current_url.length;
-    //        let active_part = current_url.substr(-7);
-    //        let active_text = '_active';
-    //        let url;
-    //
-    //        if (active_part === active_text)
-    //            url = current_url.substr(0, current_len-7);
-    //        else
-    //            url = current_url + active_text;
-    //
-    //        url+='.svg';
-    //        $(el).children('a').children('img').attr('src', url);
-    //    }
+
 </script>
 
 <script type="text/javascript">

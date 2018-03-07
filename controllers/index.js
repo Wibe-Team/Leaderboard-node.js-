@@ -5,40 +5,72 @@ const resort_args = {
     credentials: config.credentials,
     schemeStatus: config.resort_schemeStatus,
 };
+function renderPage(result, express_req, express_res, type, lastRequest, result_resort) {
+    const tabs = config.tabs;
+    let arr = []
+    try {arr = JSON.parse(result_resort.return)} catch (e) {console.log(e) };
+    const UnitsInline = getUnitsInline(tabs, express_req.params.competitionId);
+    if (type === 'list') {
+        express_res.render('../view/' + type + '.hbs', {
+            title: config.title,
+            tt: lastRequest.substr(0),
+            popup_categories_count: (config.popup_categories_count) ? config.popup_categories_count : 0,
+            period: express_req.params.period,
+            competitionId: express_req.params.competitionId,
+            resort: express_req.params.resort,
+            unitsinline :UnitsInline,
+            TopMenuView: getTopMenuView(express_req.params, type),
+            PlayersListView: getPlayersListView(result.return,UnitsInline) ,
+            AwardsListView: getAwardsListView(tabs, express_req.params),
+            CategoriesListView: getCategoriesListView(tabs),
+            ResortList: getResortList(arr),
+            CurrentResort: getCurrentResort(express_req.params.resort, arr)
+        });
+    }
 
-function getDateOfDay(type) {
-    const day = 86400000;
-    let now = new Date();
-    if (type === 0) return now.getDate();
-    if (type === 1) {
-        if (now.getDay()===0)
-            return now;
-        else
-            return now - (now.getDay()*day) ;
+    if (type === 'fs_list') {
+        express_req.params.competitionId = express_req.params.competitionIdList;
+        let competitionIdList = express_req.params.competitionIdList.split('_');
+        express_res.render('../view/' + type + '.hbs', {
+            title: config.title,
+            period: express_req.params.period,
+            resort: express_req.params.resort,
+            refreshTimeout: config.refreshTimeout,
+            idList: competitionIdList,
+            tabs: JSON.stringify(tabs),
+            TopMenuView: getTopMenuView(express_req.params, type),
+            FSPlayersListView: getFSPlayersListView(tabs, competitionIdList, result.return, getUnitsInlineList(tabs, competitionIdList)),
+            ResortList: getResortList(arr),
+            CurrentResort: getCurrentResort(express_req.params.resort, arr)
+        });
     }
-    if (type === 3) {
-        if (now.getMonth()<8) return 1;
-        if (now.getMonth()>=8) return 0;
-    }
+}
+
+function validateDatetoStr(targetDate){
+    let str ='' + targetDate.getFullYear()+'-';
+    if ( (targetDate.getMonth()+1) >9 ) str+=(targetDate.getMonth()+1)+'-';
+    else str+='0'+(targetDate.getMonth()+1)+'-';
+    if (targetDate.getDate()>9 ) str+=targetDate.getDate();
+    else str+='0'+targetDate.getDate();
+    return str;
 }
 function getStrDate(type) {
-    let now = new Date();
-    if (type === 0) return now.getFullYear() +'-0'+ now.getMonth() +'-0'+ getDateOfDay(type);
-    if (type === 1) {
-        let v = getDateOfDay(type)
-        v = new Date(v);
-        if (v < 1)
-            return now.getFullYear() +'-0'+ now.getMonth()-1 +'-0'+ v.getDate();
-        else
-            return now.getFullYear() +'-0'+ now.getMonth() +'-0'+ v.getDate();
+    let targetDate = new Date();
+    if (type === 0) {
+        // Obtaining today's date.
+        return validateDatetoStr(targetDate);
     }
-    if (type === 3){
-        if ( getDateOfDay(type) === 0 )
-            return now.getFullYear() +'-08-01';
-        if ( getDateOfDay(type) === 1 )
-            return now.getFullYear()-1 +'-08-01';
+    if (type === 1) {
+        // Obtaining last sunday date.
+        targetDate.setDate(targetDate.getDate() - (targetDate.getDay() + 7) % 7);
+        return validateDatetoStr(targetDate);
+    }
+    if (type === 3) {
+        // Obtaining 1.08 of the last year.
+        return (targetDate.getMonth()>=8) ? targetDate.getFullYear()+'-08-01' : targetDate.getFullYear()-1+'-08-01';
     }
 }
+
 function getUnitsInline(tabs, id) {
     for ( let i in tabs )
         if (tabs[i].tabId === id)
@@ -111,7 +143,6 @@ function getFSPlayersListView(tabs, idList, json, units_list) {
     }
     return str;
 }
-
 function getPlayersListView(json, units) {
     let obj;
     try { obj = JSON.parse(json) } catch(e){console.log(e);}
@@ -139,7 +170,6 @@ function getPlayerColumnView(obj, column_info) {
         n++;
         str+=getPlayerRowView( obj[i] , column_info.units_in_line, n)
     }
-
     str +=
         `<div class="more">
                         <div class="circle"></div>
@@ -167,49 +197,39 @@ function getValid_competitionIdList(str){
     return JSON.stringify(arr)
 }
 
-async function getResort(result, express_req, express_res, type) {
+function getResortList(arr){
+    let data='';
+    for ( let i in arr)
+        if (arr[i].subAreas != '')
+            if (arr[i].subAreas != null)
+                // data+=arr[i].name+': '+arr[i].subAreas+' <br />';
+                data+=`
+                    <div class="item" id="${arr[i].id}" onclick="resortCheck(this)" >
+                        <div class="name">${arr[i].name}</div>
+                        <div class="subAreas" style="display: none">${arr[i].subAreas}</div>
+                    </div>`;
+
+    return data;
+}
+
+function getCurrentResort(resort, arr) {
+    for ( let i in arr)
+        if (parseInt(resort) === arr[i].id)
+            return arr[i].name+': '+arr[i].subAreas;
+}
+function renderJSON(result, express_req, express_res) {
+    express_res.send(result.return)
+}
+
+
+
+async function getResort(result, express_req, express_res, type, lastRequest) {
     soap.createClient(config.url, config.wsdlOptions,  function(err, client) {
         client.getSkiAreasJSON(resort_args,  function(err, result2) {
-            const tabs = config.tabs;
-            let data='';
-            let arr = result2.return
-            try { arr = JSON.parse(arr) }catch (e){console.log(e)};
-            for ( let i in arr)
-                if (arr[i].subAreas != '')
-                    if (arr[i].subAreas != null)
-                        data+=arr[i].name+': '+arr[i].subAreas+' <br />';
-
-            if (type === 'list'){
-                express_res.render('../view/'+type+'.hbs', {
-                    title: config.title,
-                    popup_categories_count: (config.popup_categories_count) ? config.popup_categories_count : 0 ,
-                    period: express_req.params.period,
-                    resort: express_req.params.resort,
-                    TopMenuView: getTopMenuView(express_req.params, type),
-                    PlayersListView: getPlayersListView( result.return, getUnitsInline(tabs, express_req.params.competitionId) ),
-                    AwardsListView: getAwardsListView( tabs, express_req.params),
-                    CategoriesListView: getCategoriesListView(tabs),
-                    data: data
-                });
-            }
-
-            if (type==='fs_list'){
-                express_req.params.competitionId = express_req.params.competitionIdList;
-                let competitionIdList = express_req.params.competitionIdList.split('_');
-                express_res.render('../view/'+type+'.hbs', {
-                    title: config.title,
-                    period: express_req.params.period,
-                    TopMenuView: getTopMenuView(express_req.params, type),
-                    // PlayersListView: result.return,
-                    FSPlayersListView: getFSPlayersListView(tabs, competitionIdList, result.return, getUnitsInlineList(tabs, competitionIdList) ),
-                    data: data
-                });
-            }
-
+            renderPage(result, express_req, express_res, type, lastRequest, result2)
         });
     });
 }
-
 
 
 module.exports = {
@@ -223,16 +243,32 @@ module.exports = {
             startFrom: part_of_date+'T15:20:54.120+04:00',
         };
         const resort = express_req.params.resort;
-        // if (resort !== 'overall') args.skiAreaId = resort;
+        if (resort !== '0') args.skiAreaId = resort;
 
         soap.createClient(config.url, config.wsdlOptions,  function(err, client) {
             client.getCompetitionDataJSON(args, function(err, result) {
                 if (err) console.log(err);
-                getResort(result, express_req, express_res, type);
+                getResort(result, express_req, express_res, type, client.lastRequest+' ');
             });
         });
     },
-
+    soap_request_to_JSON(express_req, express_res, type){
+        const part_of_date = getStrDate(  parseInt(express_req.params.period) )
+        let args = {
+            credentials:config.credentials,
+            competitionId: express_req.params.competitionId,
+            period: express_req.params.period,
+            startFrom: part_of_date+'T15:20:54.120+04:00',
+        };
+        const resort = express_req.params.resort;
+        if (resort !== '0') args.skiAreaId = resort;
+        soap.createClient(config.url, config.wsdlOptions,  function(err, client) {
+            client.getCompetitionDataJSON(args, function(err, result) {
+                if (err) console.log(err);
+                renderJSON(result, express_req, express_res);
+            });
+        });
+    },
     soap_request_for_many(express_req, express_res, type){
         const partofdate = getStrDate(  parseInt(express_req.params.period) )
         const valid_competitionIdList = getValid_competitionIdList(express_req.params.competitionIdList);
@@ -242,12 +278,31 @@ module.exports = {
             period: express_req.params.period,
             startFrom: partofdate+'T15:20:54.120+04:00'
         };
+        const resort = express_req.params.resort;
+        if (resort !== '0') args.skiAreaId = resort;
         soap.createClient(config.url, config.wsdlOptions,  function(err, client) {
             client.getCompetitionDataJSON2(args, function(err, result) {
                 if (err) console.log(err);
                 getResort(result, express_req, express_res, type);
             });
         });
+    },
+    soap_request_for_JSONmany(express_req, express_res, type){
+        const partofdate = getStrDate(  parseInt(express_req.params.period) )
+        const valid_competitionIdList = getValid_competitionIdList(express_req.params.competitionIdList);
+        const args = {
+            credentials:config.credentials,
+            competitionIdsJSON: valid_competitionIdList,
+            period: express_req.params.period,
+            startFrom: partofdate+'T15:20:54.120+04:00'
+        };
+        const resort = express_req.params.resort;
+        if (resort !== '0') args.skiAreaId = resort;
+        soap.createClient(config.url, config.wsdlOptions,  function(err, client) {
+            client.getCompetitionDataJSON2(args, function(err, result) {
+                if (err) console.log(err);
+                renderJSON(result, express_req, express_res);
+            });
+        });
     }
-
 }

@@ -64,7 +64,7 @@ header .resort .select{
     top: 50px;
     width: 100%;
     padding: 15px 10px;
-
+    overflow: auto;
     max-height: 520px;
     background: #fff;
 
@@ -81,7 +81,7 @@ header .resort .select .item{
     height: 40px;
     line-height: 40px;
     border-bottom: 1px solid #e0e0e0;
-
+    cursor: pointer;
     font-size: 16px;
     font-weight: 300;
 }
